@@ -4,6 +4,7 @@
 ********* PROJECT NAME: 201 Project ************************
 ***********************************************************/
 #include <SoftwareSerial.h>
+#include <U8g2lib.h>//For Display
 
 #define CDS_ONE A1
 #define SDA     A4
@@ -27,6 +28,7 @@ bool high_pass = false;
 float distance_negative_one = 0, distance_ccw = 0, distance_cw = 0, distance_plus_one = 0; 
 const uint8_t distance_max_angle = 82;  
 
+U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);//display declaration
 
 void setup() {
   // put your setup code here, to run once:
@@ -40,8 +42,30 @@ void setup() {
   digitalWrite(LED_POWER,HIGH);
   digitalWrite(STATE_LED,HIGH); 
   Serial.begin(115200); 
+  u8g2.begin();
+
+// Example for string msg, see more funcs from u8g2lib
+//  u8g2.clearBuffer();
+//  u8g2.setFont(u8g2_font_logisoso24_tr);
+//  u8g2.drawStr(0,32,"CaliTool");
+//  u8g2.sendBuffer();
+//  delay(2000);
+  //Example for display value
+  updateDataOnScreen(30.45f);
   //software_Serial.begin(9600); 
 
+}
+
+//Display float value
+void updateDataOnScreen(float value_){
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_logisoso24_tr);
+  char outputString[] ="00.00";
+  dtostrf(value_, 2, 2, outputString);
+  u8g2.drawStr(0,32,outputString);
+  u8g2.setFont(u8g2_font_logisoso16_tr);
+  u8g2.drawStr(90,32,"mm");
+  u8g2.sendBuffer();
 }
 
 void loop() {
